@@ -40,6 +40,7 @@ import { Watch } from "vue-property-decorator";
   name: "Main",
 })
 export default class App extends Vue {
+  // Переменные
   searchQuery = "";
   dialogVisible = false;
   isPostLoading = false;
@@ -55,6 +56,7 @@ export default class App extends Vue {
   };
   posts: Post[] = [];
 
+  // @Watch смотрит на измения объекта/переменной. При его изменении выполняется код
   @Watch("GeneralPB", { deep: true })
   controlCurPage() {
     if (this.GeneralPB.currentPage > this.GeneralPB.countPages) {
@@ -65,21 +67,25 @@ export default class App extends Vue {
     }
   }
 
+  // Срабатывает, когда данные изменяются
   updated() {
     this.caclCountPages();
   }
 
+  // Срабатвает, когда просиходит загрузка страницы
   mounted() {
     this.fetchPosts();
     document.title = "Test App: main";
     this.$my.changeTitle("Posts");
   }
 
+  // Параметром передается объект Поста и Добавлется в массив.
   createPost(post: Post) {
     this.posts.push(post);
     this.dialogVisible = false;
     this.caclCountPages();
   }
+  // Удаление поста
   removePost(post: Post) {
     this.posts = this.posts.filter((p) => p.id !== post.id);
     this.caclCountPages();
@@ -87,6 +93,8 @@ export default class App extends Vue {
   showDialog() {
     this.dialogVisible = true;
   }
+
+  // Асихронное получение данных из сети. Используется пакет axios
   async fetchPosts() {
     try {
       this.isPostLoading = true;
@@ -104,16 +112,19 @@ export default class App extends Vue {
     }
   }
 
+  // Сортировка постов по заданному параметру (selectedSort)
   get sortedPosts() {
     return [...this.posts].sort((post1: Post, post2: Post) =>
       post1[this.selectedSort]?.localeCompare(post2[this.selectedSort])
     );
   }
+  // Поиск простов. Показывает только те, которые имеют совпадения с введенным значением (searchQuery)
   filterPosts() {
     return this.sortedPosts.filter((post: Post) =>
       post.title.toLowerCase().includes(this.searchQuery.toLowerCase())
     );
   }
+  // Показывает только те посты, которые находятся на n страниничке
   get slicePost() {
     return this.filterPosts().slice(
       (this.GeneralPB.currentPage - 1) * this.pageSize,
@@ -121,10 +132,12 @@ export default class App extends Vue {
     );
   }
 
+  // Смена страницы
   changePage(countPage: number) {
     this.GeneralPB.currentPage = countPage;
   }
 
+  // Подсчет страниц
   caclCountPages() {
     this.GeneralPB.countPages = Math.ceil(
       this.filterPosts().length / this.pageSize

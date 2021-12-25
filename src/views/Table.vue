@@ -137,6 +137,7 @@ export default class Table extends Vue {
 
   mounted() {}
 
+  // Заполнения таблицы данными
   fillPeople() {
     this.peoples = [
       {
@@ -213,6 +214,7 @@ export default class Table extends Vue {
     this.caclCountPages();
   }
 
+  // Добавление человека в таблицу и генерация ему id
   createPeople(people: People) {
     if (!people.name || !people.age || !people.position || !people.telnumber) {
       alert("Некорректный ввод");
@@ -234,15 +236,18 @@ export default class Table extends Vue {
     this.dialogVisible = true;
     this.change = true;
   }
+  // Удаление человека из таблицы
   removePeople(people: People) {
     this.peoples = this.peoples.filter((p) => p.id !== people.id);
     this.caclCountPages();
   }
+  // Редактирование данных человека
   changePeople(people: People) {
     people.id = Date.now().toString();
     this.peoples[this.index] = people;
     this.dialogVisible = false;
   }
+  // Получения индеска человека
   getIndex(people: People) {
     this.index = this.peoples.indexOf(people);
   }
@@ -252,6 +257,7 @@ export default class Table extends Vue {
       p1[this.selectedSort]?.localeCompare(p2[this.selectedSort])
     );
   }
+  // Поиск людей по заданному параметру
   filterPosts() {
     if (this.selectedSort == "position") {
       return this.sortedPeople.filter((people: People) =>
@@ -283,7 +289,6 @@ export default class Table extends Vue {
   changePage(countPage: number) {
     this.GeneralPB.currentPage = countPage;
   }
-
 }
 </script>
 
